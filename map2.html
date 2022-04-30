@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>United States COVID-19 Case Tracker</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
+    <style>
+        .map-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(0, 0, 0, 0.2);
+            margin-left: 20px;
+            font-family: Arial, sans-serif;
+            overflow: auto;
+            border-radius: 3px;
+        }
+        h2, h3 {
+                margin: 8px;
+                font-size: 18px;
+                color: black
+        }
+
+        h3 {
+            font-size: 12px;
+            color: black
+        }
+
+        p {
+            margin: 5px;
+            color: black
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #features {
+            top: 0;
+            height: 180px;
+            margin-top: 20px;
+            width: 210px;
+        }
+
+        #legend {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 110px;
+            background: #fff;
+            margin-right: 20px;
+            margin-bottom: 40px;
+            padding: 10px 20px 10px 10px;
+            border-radius: 3px;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .break {
+            position: relative;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .dot {
+            display: inline-block;
+            margin-top: 5px;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .dot-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-style: italic;
+        }
+
+        a {
+            color: black
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="legend"></div>
+    <div class='map-overlay' id='features'>
+        <h2>United States COVID-19 Cases Tracker</h2>
+        <div id='text-description'>
+            <p> This map tracks the number of COVID-19 cases per county.</p>
+            <p>Click on a county to learn more!</p>
+        </div>
+    </div>
+    <script>
+        mapboxgl.accessToken =
+            'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
+        let map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v10',
+            zoom: 3.5, // starting zoom
+            center: [-98, 38] // starting center
+        });
+
+        const case_num = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000],
+            colors = ['rgb(255,255,255)', 'rgb(255,205,205)', 'rgb(255,176,176)',
+                      'rgb(255,138,138)', 'rgb(255,98,98)', 'rgb(255,67,67)',
+                      'rgb(255,35,35)', 'rgb(255,0,0)'],
+            radii = [3, 4, 6, 9, 14, 20, 27, 45];
+
+        map.on('load', () => {
+            map.addSource('us-covid-2020-counts', {
+                type: 'geojson',
+                data: 'assets/us-covid-2020-counts.geojson'
+            });
+
+            map.addLayer({
+                    'id': 'us-covid-2020-counts',
+                    'type': 'circle',
+                    'source': 'us-covid-2020-counts',
+                    'minzoom': 3,
+                    'paint': {
+                        'circle-radius': {
+                            'property': 'cases',
+                            'stops': [
+                                [{
+                                    zoom: 3,
+                                    value: case_num[0]
+                                }, radii[0]],
+                                [{
+                                    zoom: 3,
+                                    value: case_num[1]
+                                }, radii[1]],
+                                [{
+                                    zoom: 3,
+                                    value: case_num[2]
+                                }, radii[2]],
+                                [{
+                                    zoom: 3,
+                                    value: case_num[3]
+                                }, radii[3]],
+                                [{
+                                    zoom: 3,
+                                    value: case_num[4]
+                                }, radii[4]],
+                                [{
+                                    zoom: 3,
+                                    value: case_num[5]
+                                }, radii[5]],
+                                [{
+                                    zoom: 3,
+                                    value: case_num[6]
+                                }, radii[6]],
+                                [{
+                                    zoom: 3,
+                                    value: case_num[7]
+                                }, radii[7]]
+                            ]
+                        },
+                        'circle-color': {
+                            'property': 'cases',
+                            'stops': [
+                                [case_num[0], colors[0]],
+                                [case_num[1], colors[1]],
+                                [case_num[2], colors[2]],
+                                [case_num[3], colors[3]],
+                                [case_num[4], colors[4]],
+                                [case_num[5], colors[5]],
+                                [case_num[6], colors[6]],
+                                [case_num[7], colors[7]]
+                            ]
+                        },
+                        'circle-stroke-color': 'black',
+                        'circle-stroke-width': 1,
+                        'circle-opacity': 0.5
+                    }
+                },
+                'waterway-label'
+            );
+
+            map.on('click', 'us-covid-2020-counts', (event) => {
+                new mapboxgl.Popup()
+                    .setLngLat(event.features[0].geometry.coordinates)
+                    .setHTML(`<strong> ${event.features[0].properties.county} County</strong><br>` + 
+                    `<p1>Cases:</p1> ${event.features[0].properties.cases}<br>` +
+                    `<p1>Deaths:</p1> ${event.features[0].properties.deaths}`)
+                    .addTo(map);
+            });
+
+        });
+
+        // create legend
+        const legend = document.getElementById('legend');
+        //set up legend grades and labels
+        var labels = ['<strong>Cases</strong>'],
+            vbreak;
+        //iterate through grades and create a scaled circle and label for each
+        for (var i = 0; i < case_num.length; i++) {
+            vbreak = case_num[i];
+            // you need to manually adjust the radius of each dot on the legend 
+            // in order to make sure the legend can be properly referred to the dot on the map.
+            dot_radii = 2 * radii[i];
+            labels.push(
+                '<p class="break"><i class="dot" style="background:' + colors[i] + '; width: ' + dot_radii +
+                'px; height: ' +
+                dot_radii + 'px; "></i> <span class="dot-label" style="top: ' + dot_radii / 2 + 'px;">' + vbreak +
+                '</span></p>');
+
+        }
+        const source =
+            '<p style="text-align: right; font-size:10pt">Source: <a href="https://github.com/nytimes/covid-19-data/blob/43d32dde2f87bd4dafbb7d23f5d9e878124018b8/live/us-counties.csv">NY TIMES</a></p>';
+        legend.innerHTML = labels.join('') + source;
+
+    </script>
+
+</body>
+
+</html>
