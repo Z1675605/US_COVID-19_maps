@@ -6,7 +6,7 @@ In this lab I create two thematic maps which map COVID-19 within the United Stat
 ## Map 1: [United States COVID-19 Rates per County](https://z1675605.github.io/US_COVID-19_maps/map1.html)
 ![Map 1, choropleth map of the US COVID rates](/img/map1.JPG)
 
-In this map I created a hover based interation where the user can hover over each county and learn the rate of cases per thousand. I decided to use a gradient that darkens as the number of cases rise which can be determined by looking at the legend for each category. The data used is from the [US CENSUS](https://data.census.gov/cedsci/table?g=0100000US%24050000&d=ACS%205-Year%20Estimates%20Data%20Profiles&tid=ACSDP5Y2018.DP05&hidePreview=true).
+In this map I created a hover based interation where the user can hover over each county and learn the rate of cases per thousand. I decided to use a gradient that darkens as the number of cases rise which can be determined by looking at the legend for each category. Much of the code inspriation comes from a previous example given by the professor of this class which helped me understand how choropleth mapping works. The data used is from the [US CENSUS](https://data.census.gov/cedsci/table?g=0100000US%24050000&d=ACS%205-Year%20Estimates%20Data%20Profiles&tid=ACSDP5Y2018.DP05&hidePreview=true).
 
 ## Map 2: [United States COVID-19 Cases Tracker](https://z1675605.github.io/US_COVID-19_maps/map2.html)
 ![Map 2, dot density map of the US COVID cases](/img/map2.JPG)
